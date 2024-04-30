@@ -8,8 +8,8 @@ exports.addBook = async (req, res, next) => {
         published_year,
         genre
     } = req.body;
+    const query = 'INSERT INTO books (title, author, published_year, genre) VALUES($1, $2, $3, $4);';
 
-    const query = 'INSERT INTO books (title, author, published_year, genre) VALUES($1, $2, $3, $4);'
     try {
         await db.query(query, [title, author, published_year, genre]);
         return res.status(201).send({
@@ -21,5 +21,27 @@ exports.addBook = async (req, res, next) => {
             error: err.message
         })
     }
-}
+};
+
+
+exports.getBooks = async (req, res, next) => {
+    const query = 'SELECT * FROM books;'
+    try {
+        const books = await db.query(query);
+        if(books.rowCount < 1) {
+            return res.status(404).send({
+                message: 'No Books Found'
+            });
+        }
+        return res.status(200).send({
+            status: 'Success',
+            message: 'Books Retrieved...',
+            data: books.rows
+        })
+    } catch(err) {
+        return res.status(500).send({
+            error: err.message
+        })
+    }
+};
 

@@ -25,24 +25,53 @@ exports.addBook = async (req, res, next) => {
 
 
 exports.getBooks = async (req, res, next) => {
-    const query = 'SELECT * FROM books;'
+    let query = 'SELECT * FROM books';
+    const queryParams = [];
+    let index = 1;
+    const {
+        author,
+        published_year,
+        genre
+    } = req.query;
+        
+    if(author || published_year || genre) {
+        query += ' WHERE 1=1'; 
+        if(author) {
+            query += ` AND author=$${index}`;
+            queryParams.push(author);
+            index++;
+        }
+        if(published_year) {
+            query += ` AND published_year=$${index}`;
+            queryParams.push(parseInt(published_year));
+            index++;
+        }
+        if(genre) {
+            query += ` AND genre=$${index}`;
+            queryParams.push(genre);
+        }
+    }
+    query += ';';
     try {
-        const books = await db.query(query);
+        const books = await db.query(query, queryParams);
         if(books.rowCount < 1) {
             return res.status(404).send({
+                status: 'error',
                 message: 'No Books Found'
-            });
+            })
         }
         return res.status(200).send({
             status: 'Success',
-            message: 'Books Retrieved...',
+            message: 'Books Retrieved',
             data: books.rows
         })
     } catch(err) {
         return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
             error: err.message
         })
-    }
+    }    
 };
 
 
@@ -66,4 +95,4 @@ exports.getBookById = async (req, res, next) => {
             error: err.message
         })
     }
-}
+};

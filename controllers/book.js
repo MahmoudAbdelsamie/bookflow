@@ -45,3 +45,25 @@ exports.getBooks = async (req, res, next) => {
     }
 };
 
+
+exports.getBookById = async (req, res, next) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM books WHERE id=$1;';
+    try {
+        const book = await db.query(query, [id]);
+        if(book.rowCount < 1) {
+            return res.status(404).send({
+                message: 'No Book Found'
+            })
+        }
+        return res.status(200).send({
+            status: 'Success',
+            message: 'Book Retreived...',
+            data: book.rows
+        })
+    } catch(err) {
+        return res.status(500).send({
+            error: err.message
+        })
+    }
+}

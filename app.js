@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bookRoutes);
 
 app.get('/', (req, res) => {
-    res.send('<h1>Welcome To Books!</h1>')
+    res.send('<h1>Welcome To BookFlow!</h1>')
 })
 
 

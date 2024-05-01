@@ -96,3 +96,28 @@ exports.getBookById = async (req, res, next) => {
         })
     }
 };
+
+
+exports.updateBookById = async (req, res, next) => {
+    const { id } = req.params;
+    const {
+        title,
+        author,
+        published_year,
+        genre
+    } = req.body;
+    const query = 'UPDATE books SET title=$1, author=$2, published_year=$3, genre=$4 WHERE id=$5;';
+    try {
+        await db.query(query, [title, author, published_year, genre, id]);
+        return res.status(200).send({
+            status: 'success',
+            message: 'Book Updated...'
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+};

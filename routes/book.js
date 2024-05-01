@@ -10,4 +10,7 @@ router.get('/book/:id', booksController.getBookById);
 router.put('/book/:id', booksController.updateBookById);
 
 
+router.delete('/book/:id', booksController.deleteBookById);
+
+
 module.exports = router;

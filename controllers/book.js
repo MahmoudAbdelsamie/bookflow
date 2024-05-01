@@ -121,3 +121,21 @@ exports.updateBookById = async (req, res, next) => {
         })
     }
 };
+
+exports.deleteBookById = async (req, res, next) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM books WHERE id=$1;';
+    try {
+        await db.query(query, [id]);
+        return res.status(200).send({
+            status: 'success',
+            message: 'Book Deleted...'
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
